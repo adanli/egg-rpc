@@ -61,8 +61,59 @@
 ### register  
 - 略  
 ### transport  
-- 略  
+```puml
+@startuml
+class Accept
+class Selector
+class ErpcServer
+@enduml
+```
+
 ### serialize  
-- 略   
+```puml
+@startuml
+Header *-- Packet
+Body *-- Packet
+Packet <|-- ErpcPacket 
+Header <|-- ErpcHeader
+Body <|-- ErpcBody 
+ErpcHeader *-- ErpcPacket
+ErpcBody *-- ErpcPacket
+class Header {
+    {field} - int length
+    {field} - long requestId
+    {field} - packetCount
+    {field} - packetNumber
+}
+class Body {
+    {field} - String class
+    {field} - String method
+    {field} - String params
+}
+class Serialize <<interface>>
+class ErpcSerialize {
+    {method} serialize(<T> object)
+    {method} deSerialize(String json)
+}
+Serialize <|-- ErpcSerialize
+@enduml
+```
+
 ### protocol  
-- 略  
+```puml
+@startuml
+Protocol <|-- AbstractTcp
+AbstractTcp <|-- Erpc 
+class Protocol <<interface>>
+class AbstractTcp <<interface>>{
+    {method} # ack()
+    {method} # send()
+    {method} # split()
+    {method} # judgeRepeat()
+    {method} # check()
+}
+note top of Protocol: 一个协议接口
+note left of AbstractTcp: 抽象的tcp接口，\n定义了遵循tcp协议的基础方法
+note right of Erpc: Erpc协议的具体实现
+@enduml
+```
