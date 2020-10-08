@@ -8,114 +8,20 @@
 
 ## ERPC
 
-### 架构
+### 软件架构分层
+- register 注册层，负责与Registry注册中心之间的通信  
+- transport 通信层，负责erpc的客户端和服务端之间的通信
+- serialize 序列化层，负责io通信间的对象序列化, 对于包的封装会在这一层进行处理  
+- protocol 协议层，实现了tcp协议的一些规定, , 对于数据流的粘包和拆包处理会在这一层里实现
+    - tcp实现的规定
+        1. 数据分片: 根据默认的数据片大小，对数据流进行切分
+        2. 到达确认：接收端收到分片数据时，根据分片数据的序号向服务端发送一个确认
+        3. 超时重发：发送端在发送分片时，会启动一个定时器，如果定时器超时的时候仍然没有收到接收端的确认回执，会自动重发这个数据分片
+        4. 滑动窗口：接收端只允许接收小于缓冲区容量大小的数据
+        5. 失序处理：接收端收到发送端的分片数据的序号可能与发送时的不一致
+        6. 重复处理：当重复收到同一个分片数据时，接收端应当丢弃重复的数据
+        7. 数据校验：接收端收到数据时，应该校验实际收到的数据与它首部里的数据和是否一致，如果不一致，接收端应当丢弃这个数据包并不触发确认机制，由发送端重新发送数据包  
 
-- 角色
-
-	- Registry
-
-	  注册中心
-
-	- Provider
-
-	  服务提供方
-
-		- register
-
-			- 这块专门与注册中心Registry交互，目前没有用到，等到后续Registry完备后，补充这块的功能
-
-		- transport
-
-			- 这一层用来接收请求
-
-				- 暴露一个端口，专门用于接口之间的通信
-
-					- 默认12200
-					- 可以通过application.properties中的erpc.transport.port修改
-
-				- 粘包处理
-				- 断包处理
-
-		- serialize
-
-			- 序列化相关
-
-				- 默认使用Google的ProtoBuf序列化框架
-				- 对参数进行打包，创建Packet包
-
-					- Header
-
-						- Length
-						- Protocol
-
-							- 默认erpc
-
-						- requestId
-
-						  请求id，面对断包的情况，需要设置一个id，保证接收多个数据包的时候，最终能够被组合起来
-
-						- packetCount
-
-						  包数量，表示当前请求一共有多少个包，用于应对断包的情况
-
-						- packetNumber
-
-						  当前包位于整个包数据中的位置，起点是1，在出现断包的情况时，该标志表示当前包是整个数据包中第几个。其他情况下默认是0
-
-					- Body
-
-						- Class
-						- Method
-						- Parameters
-
-				- 后续会考虑自定义
-
-		- protocol
-
-			- 设置协议，包括默认的erpc协议
-			- 支持协议转换
-
-				- erpc <=> http
-				- erpc <=> bolt
-				- erpc <=> dubbo rpc
-
-		- service
-
-			- 用户自定义
-
-				- XML配置文件
-				- 注解
-
-	- Subscriber
-
-	  服务消费方
-
-		- register
-
-		  与Provider中的register一致
-
-		- transport
-
-			- 这一层用来发出请求
-
-				- 断包处理
-
-					- 设置requestId， packetCount，packetNumber
-
-		- serialize
-
-		  与Provider中的serialize功能一致，此处主要是对参数做序列化处理
-
-		- protocol
-
-		  与Provider中的protocol一致
-
-		- refer
-
-			- 引入sdk，用户自己设置引入的方式
-
-				- XML配置文件
-				- 注解
 
 ### RPC调用过程
 
@@ -150,3 +56,13 @@
 - junit: 4.13
 - slf4j: 1.7.30
 - slf4j-simple: 1.7.30
+
+## UML图
+### register  
+- 略  
+### transport  
+- 略  
+### serialize  
+- 略   
+### protocol  
+- 略  
