@@ -55,6 +55,9 @@
 - junit: 4.13
 - slf4j: 1.7.30
 - slf4j-simple: 1.7.30
+-jackson-databind: 2.11.3
+-jackson-core: 2.11.3
+-jackson-annotations: 2.11.3
 
 ## UML图
 ### register  
@@ -62,20 +65,19 @@
 ### transport  
 ```puml
 @startuml
-class Transport <<abstract class>>
-class SimpleTransport <<abstract class>>{
-    {field} - ServerSocketChannel channel
-    {field} - Selector selector
+abstract class Transport
+class SimpleTransport{
+    {method} send(String serializeMessage)
 }
 Transport <|-- SimpleTransport
-class Handler <<abstract class>> {
+abstract class Handler {
     {method} - handle()
 }
 Handler <|-- SimpleHandler
-class SimpleHandler <<class>>
-class Accept <<abstract class>>
+class SimpleHandler
+abstract class Accept 
 Accept <|-- SimpleAccept
-class SimpleAccept <<class>>
+class SimpleAccept 
 @enduml
 ```
 
@@ -85,30 +87,33 @@ class SimpleAccept <<class>>
 Header *-- Packet
 Body *-- Packet
 Packet <|-- SimplePacket 
-class Packet <<abstract class>>
+abstract class Packet 
 Header <|-- SimpleHeader
 Body <|-- SimpleBody 
 SimpleHeader *-- SimplePacket
-class SimpleHeader <<class>>
+class SimpleHeader 
 SimpleBody *-- SimplePacket
-class SimpleBody <<class>>
-class Header <<abstract class>>{
+class SimpleBody 
+abstract class Header {
     {field} - int length
     {field} - long requestId
     {field} - packetCount
     {field} - packetNumber
+    {field} - type
 }
-class Body <<AbstractClass>>{
-    {field} - String class
+abstract class Body {
+    {field} - String className
     {field} - String method
-    {field} - String params
+    {field} - String parameters
 }
-class SimplePacket <<class>>
-class Serialize <<interface>>
-class SimpleSerialize <<class>>{
-    {method} serialize(<T> object)
+class SimplePacket 
+interface Serialize 
+class SimpleSerialize {
+    {method} serialize(Packet packet)
     {method} deSerialize(String json)
 }
+note "消息类型，\n比如这是一个普通消息、确认回执消息等" as HEADER_MSG_1
+HEADER_MSG_1 .. Header
 Serialize <|-- SimpleSerialize
 @enduml
 ```
@@ -116,19 +121,24 @@ Serialize <|-- SimpleSerialize
 ### protocol  
 ```puml
 @startuml
-Protocol <|-- AbstractTcp
-AbstractTcp <|-- Erpc 
-class Protocol <<interface>>
-class AbstractTcp <<interface>>{
+Protocol <|-- ITcp
+ITcp <|-- Erpc 
+interface Protocol 
+interface ITcp {
     {method} # ack()
     {method} # send()
     {method} # split()
     {method} # judgeRepeat()
     {method} # check()
+    {method} # discard()
 }
-class Erpc <<class>>
+class Erpc 
 note top of Protocol: 一个协议接口
-note left of AbstractTcp: 抽象的tcp接口，\n定义了遵循tcp协议的基础方法
+note left of ITcp: 抽象的tcp接口，\n定义了遵循tcp协议的基础方法
 note right of Erpc: Erpc协议的具体实现
 @enduml
 ```
+
+### 备注
+- 数据包和数据分片的关系
+- 需要让被远程调用的接口使用动态代理实现远程调用
