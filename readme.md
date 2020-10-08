@@ -63,9 +63,17 @@
 ### transport  
 ```puml
 @startuml
-class Accept
-class Selector
-class ErpcServer
+class Transport 
+class SimpleTransport {
+    {field} - ServerSocketChannel channel
+    {field} - Selector selector
+}
+Transport <|-- SimpleTransport
+class Handler {
+    {method} - handle()
+}
+Handler <|-- SimpleHandler
+Accept <|-- SimpleAccept
 @enduml
 ```
 
@@ -74,11 +82,11 @@ class ErpcServer
 @startuml
 Header *-- Packet
 Body *-- Packet
-Packet <|-- ErpcPacket 
-Header <|-- ErpcHeader
-Body <|-- ErpcBody 
-ErpcHeader *-- ErpcPacket
-ErpcBody *-- ErpcPacket
+Packet <|-- SimplePacket 
+Header <|-- SimpleHeader
+Body <|-- SimpleBody 
+SimpleHeader *-- SimplePacket
+SimpleBody *-- SimplePacket
 class Header {
     {field} - int length
     {field} - long requestId
@@ -91,11 +99,11 @@ class Body {
     {field} - String params
 }
 class Serialize <<interface>>
-class ErpcSerialize {
+class SimpleSerialize {
     {method} serialize(<T> object)
     {method} deSerialize(String json)
 }
-Serialize <|-- ErpcSerialize
+Serialize <|-- SimpleSerialize
 @enduml
 ```
 
