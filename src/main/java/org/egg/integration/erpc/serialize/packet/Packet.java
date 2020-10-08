@@ -26,4 +26,12 @@ public abstract class Packet {
     public void setBody(Body body) {
         this.body = body;
     }
+
+    public Header getHeader() {
+        return header;
+    }
+
+    public Body getBody() {
+        return body;
+    }
 }

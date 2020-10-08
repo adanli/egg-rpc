@@ -1,9 +1,11 @@
 package org.egg.integration.erpc.protocol.tcp;
 
+import org.egg.integration.erpc.protocol.Protocol;
+
 /**
  * 自定义的tcp接口，用于定义tcp协议规定的基础功能
  */
-public interface ITcp {
+public interface ITcp extends Protocol {
     /**
      * 接收端在收到发送端的数据分片后，给发送端返回的确认
      */
