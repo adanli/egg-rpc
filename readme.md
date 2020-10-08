@@ -63,17 +63,20 @@
 ### transport  
 ```puml
 @startuml
-class Transport 
-class SimpleTransport {
+class Transport <<abstract class>>
+class SimpleTransport <<abstract class>>{
     {field} - ServerSocketChannel channel
     {field} - Selector selector
 }
 Transport <|-- SimpleTransport
-class Handler {
+class Handler <<abstract class>> {
     {method} - handle()
 }
 Handler <|-- SimpleHandler
+class SimpleHandler <<class>>
+class Accept <<abstract class>>
 Accept <|-- SimpleAccept
+class SimpleAccept <<class>>
 @enduml
 ```
 
@@ -83,23 +86,27 @@ Accept <|-- SimpleAccept
 Header *-- Packet
 Body *-- Packet
 Packet <|-- SimplePacket 
+class Packet <<abstract class>>
 Header <|-- SimpleHeader
 Body <|-- SimpleBody 
 SimpleHeader *-- SimplePacket
+class SimpleHeader <<class>>
 SimpleBody *-- SimplePacket
-class Header {
+class SimpleBody <<class>>
+class Header <<abstract class>>{
     {field} - int length
     {field} - long requestId
     {field} - packetCount
     {field} - packetNumber
 }
-class Body {
+class Body <<AbstractClass>>{
     {field} - String class
     {field} - String method
     {field} - String params
 }
+class SimplePacket <<class>>
 class Serialize <<interface>>
-class SimpleSerialize {
+class SimpleSerialize <<class>>{
     {method} serialize(<T> object)
     {method} deSerialize(String json)
 }
@@ -120,6 +127,7 @@ class AbstractTcp <<interface>>{
     {method} # judgeRepeat()
     {method} # check()
 }
+class Erpc <<class>>
 note top of Protocol: 一个协议接口
 note left of AbstractTcp: 抽象的tcp接口，\n定义了遵循tcp协议的基础方法
 note right of Erpc: Erpc协议的具体实现
