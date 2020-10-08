@@ -2,11 +2,10 @@
 ## 一个rpc的简单调用协议, 目前仅设计支持以stub形式远程调用功能，后续会提供egg系列配套的注册中心、路由转发功能，以完成完整RPC框架的搭建
 ### Email: <u>adanli@126.com</u> 欢迎交流  
 
-## 大致介绍
-
-# RPC框架
-
 ## ERPC
+
+### 功能规划图
+![ability picture about egg-rpc](./pic/e-rpc.png)
 
 ### 软件架构分层
 - register 注册层，负责与Registry注册中心之间的通信  
