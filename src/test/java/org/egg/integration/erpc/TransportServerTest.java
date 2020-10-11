@@ -11,6 +11,13 @@ public class TransportServerTest {
     public void request() {
         ITcp rpc = new Erpc();
         rpc.send();
+    }
+
+    /**
+     * 测试自定义注解，将标注了该注解的类下所有的方法都转换成json串
+     */
+    @Test
+    public void testAnnotation() {
 
     }
 
