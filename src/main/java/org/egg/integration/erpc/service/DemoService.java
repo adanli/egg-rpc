@@ -1,7 +1,7 @@
 package org.egg.integration.erpc.service;
 
-public class DemoService {
-    public void hello() {
-        System.out.println("hello world");
-    }
+public interface DemoService {
+    void hello(String name);
+
+    void hi(String name);
 }
