@@ -1,6 +1,8 @@
 package org.egg.integration.erpc.component.proxy;
 
 
+import org.egg.integration.erpc.context.util.BeanNameUtils;
+
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
 import java.util.HashMap;
@@ -37,7 +39,7 @@ public class RemoteCallProxyFactory {
      */
     public static void setBean(String className) {
         Object object = create(className);
-        String beanName = beautifyBeanName(className);
+        String beanName = BeanNameUtils.beautifyBeanName(className);
         setBean(beanName, object);
     }
 
@@ -75,13 +77,16 @@ public class RemoteCallProxyFactory {
      * @param className 类的全路径
      * @return
      */
-    private static String beautifyBeanName(String className) {
+    /*private static String beautifyBeanName(String className) {
         int startPosition = className.lastIndexOf('.');
         int endPosition = className.lastIndexOf("Impl");
         if(endPosition > -1) {
             return ((char)(className.charAt(startPosition+1)+32)) + className.substring(startPosition+2, endPosition);
         }
+        if(startPosition > -1) {
+            return ((char)(className.charAt(startPosition+1)+32)) + className.substring(startPosition+2);
+        }
         return className;
-    }
+    }*/
 
 }

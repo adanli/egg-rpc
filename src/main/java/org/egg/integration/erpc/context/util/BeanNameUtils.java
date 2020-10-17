@@ -12,6 +12,9 @@ public class BeanNameUtils {
         if(endPosition > -1) {
             return ((char)(className.charAt(startPosition+1)+32)) + className.substring(startPosition+2, endPosition);
         }
+        if(startPosition > -1) {
+            return ((char)(className.charAt(startPosition+1)+32)) + className.substring(startPosition+2);
+        }
         return className;
     }
 }

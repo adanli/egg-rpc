@@ -9,7 +9,6 @@ import org.egg.integration.erpc.protocol.tcp.erpc.Erpc;
 import org.egg.integration.erpc.service.DemoService;
 import org.junit.Test;
 
-
 public class TransportServerTest {
 
     @Test
