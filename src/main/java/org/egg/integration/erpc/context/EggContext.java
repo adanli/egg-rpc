@@ -41,7 +41,7 @@ public class EggContext extends Context{
         if(beanContext instanceof BeanContext) {
             BeanContext beanContext1 = (BeanContext) beanContext;
             beanContext1.getContextMap().forEach((k, v) -> {
-                System.out.println(String.format("%s 已经在加载到资源池", k));
+                System.out.printf("%s 已经在加载到资源池\n", k);
             });
         }
     }

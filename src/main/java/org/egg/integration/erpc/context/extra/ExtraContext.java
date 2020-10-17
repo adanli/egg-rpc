@@ -1,4 +1,6 @@
 package org.egg.integration.erpc.context.extra;
 
-public abstract class ExtraContext {
+import org.egg.integration.erpc.context.Context;
+
+public abstract class ExtraContext extends Context {
 }

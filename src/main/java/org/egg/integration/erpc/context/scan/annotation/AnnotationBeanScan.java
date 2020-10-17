@@ -10,15 +10,16 @@ import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.net.URL;
 import java.util.Enumeration;
+import java.util.HashSet;
 import java.util.Map;
 
 public class AnnotationBeanScan extends AbstractScan {
     private static Map<String, Object> contextMap;
     private final String beanScanConverage = TemporaryConstant.EGG_RPC_COMPONENT_SCAN;
+    private final static String ANNOTATION_SERVICE = "org.egg.integration.erpc.annotation.Service";
 
     public AnnotationBeanScan(BeanContext context) {
         super(context);
-//        super.context = context;
         contextMap = context.getContextMap();
         scan();
     }
@@ -62,22 +63,53 @@ public class AnnotationBeanScan extends AbstractScan {
             if(pkg.endsWith(".class")) {
                 String className = pkg.substring(0, pkg.lastIndexOf(".class"));
                 // fixme 根据反射去分析Class的注解
-                annotation(className);
-                Object object = create(className);
-                String beanName = BeanNameUtils.beautifyBeanName(className);
-                contextMap.put(beanName, object);
+                if(isServiceClass(className)) {
+                    Object object = create(className);
+                    String beanName = BeanNameUtils.beautifyBeanName(className);
+                    contextMap.put(beanName, object);
+                }
             }
         }
     }
 
-    private static void annotation(String className) {
+    /**
+     * 判断当前注解是否Service
+     * 判断，如果当前文件是个类，递归查询注解中是否包含Service
+     * @return 是否注解Service
+     */
+    private static boolean isServiceClass(String className) {
         try {
             Class<?> clazz = Class.forName(className);
-            Annotation[] annotations = clazz.getAnnotations();
+            if(!clazz.isInterface()) {
+                return hasAnnotation(clazz.getAnnotations(), ANNOTATION_SERVICE, new HashSet<>());
+            }
 
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
+        return false;
+    }
+
+    /**
+     * 判断注解中是否包含目标注解, 如果包含则返回
+     * @param annotations 注解列表
+     * @param annotationStr 目标注解值
+     * @return 是否包含目标注解
+     */
+    private static boolean hasAnnotation(Annotation[] annotations, String annotationStr, HashSet<String> set) {
+        for(Annotation annotation: annotations) {
+            if(annotation.annotationType().getName().equals(annotationStr)) {
+                return true;
+            }
+            if(!set.contains(annotation.annotationType().getName())) {
+                set.add(annotation.annotationType().getName());
+                if(annotation.annotationType().getAnnotations().length>0
+                        && hasAnnotation(annotation.annotationType().getAnnotations(), annotationStr, set)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     private static Object create(String className) {

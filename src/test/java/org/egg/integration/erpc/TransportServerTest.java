@@ -3,7 +3,6 @@ package org.egg.integration.erpc;
 
 import org.egg.integration.erpc.component.proxy.RemoteCallProxyFactory;
 import org.egg.integration.erpc.component.scan.AnnotationBeanAnnotationScan;
-import org.egg.integration.erpc.context.Context;
 import org.egg.integration.erpc.context.EggContext;
 import org.egg.integration.erpc.protocol.tcp.ITcp;
 import org.egg.integration.erpc.protocol.tcp.erpc.Erpc;

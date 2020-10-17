@@ -1,9 +1,9 @@
 package org.egg.integration.erpc.service.impl;
 
-import org.egg.integration.erpc.annotation.RemoteService;
+import org.egg.integration.erpc.annotation.RemoteCalled;
 import org.egg.integration.erpc.service.DemoService;
 
-@RemoteService(ip = "localhost")
+@RemoteCalled(ip = "localhost")
 public class DemoServiceImpl implements DemoService {
     @Override
     public void hello(String name) {
