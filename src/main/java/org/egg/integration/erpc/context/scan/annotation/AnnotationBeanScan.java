@@ -21,7 +21,7 @@ public class AnnotationBeanScan extends AbstractScan {
     public AnnotationBeanScan(BeanContext context) {
         super(context);
         contextMap = context.getContextMap();
-        scan();
+        scan(beanScanConverage);
     }
 
     {
@@ -32,7 +32,7 @@ public class AnnotationBeanScan extends AbstractScan {
      * 扫描带有@Service注解的类，保存到contextMap中
      */
     @Override
-    protected void scan() {
+    protected void scan(String dir) {
         String path = beanScanConverage.replaceAll("\\.", "/");
         try {
             Enumeration<URL> enumeration = Thread.currentThread().getContextClassLoader().getResources(path);

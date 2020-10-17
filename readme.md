@@ -139,6 +139,26 @@ note right of Erpc: Erpc协议的具体实现
 @enduml
 ```
 
+### bean加载图
+```puml
+@startuml
+abstract class Context
+abstract class ExtraContext
+Context <|-- ExtraContext 
+ExtraContext <|-- AnnotationContext
+abstract class AbstractScan
+class AnnotationBeanScan {
+    {field} contextMap: Map<String, Object>
+}
+AbstractScan <|-- AnnotationBeanScan
+class BeanContext {
+    {field} scan: AbstractScan
+    {method} scan()
+} 
+Context <|-- BeanContext
+@enduml
+```
+
 ### 备注
 - 数据包和数据分片的关系
 - 需要让被远程调用的接口使用动态代理实现远程调用
