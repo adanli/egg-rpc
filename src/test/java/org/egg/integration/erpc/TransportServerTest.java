@@ -16,12 +16,8 @@ public class TransportServerTest {
 
     @Test
     public void testAll() throws Exception{
-//        testInitScanToContext();
-//        testAnnotation();
         testInitContext();
-        Thread.sleep(1000);
         testAnnotation();
-        Thread.currentThread().join();
     }
 
     @Test
@@ -50,9 +46,6 @@ public class TransportServerTest {
             e.printStackTrace();
         }
         demoService.hi("bbb");
-
-//        System.out.println("---------------------------");
-//        demoService.hi("name");
     }
 
     /**
