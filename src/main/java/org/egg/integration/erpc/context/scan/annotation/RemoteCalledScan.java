@@ -1,6 +1,8 @@
 package org.egg.integration.erpc.context.scan.annotation;
 
+import org.egg.integration.erpc.component.proxy.RemoteCallProxyFactory;
 import org.egg.integration.erpc.constant.TemporaryConstant;
+import org.egg.integration.erpc.context.BeanContext;
 import org.egg.integration.erpc.context.Context;
 import org.egg.integration.erpc.context.extra.RemoteCalledContext;
 import org.egg.integration.erpc.context.scan.AbstractScan;
@@ -25,6 +27,12 @@ public class RemoteCalledScan extends AbstractScan {
         super.init();
     }
 
+    /**
+     * 包装远程调用信息，替换原生的bean
+     * 1. 将注解中的ip、端口、协议等信息封装，并缓存到当前的上下文context中
+     * 2. 替换beanContext中的该bean，使得当前bean具有代理扩展能力
+     * @param className 类的全路径
+     */
     @Override
     protected void handleClass(String className) {
         try {
@@ -49,14 +57,25 @@ public class RemoteCalledScan extends AbstractScan {
                 }
                 String beanName = BeanNameUtils.beautifyBeanName(className);
                 if(context instanceof RemoteCalledContext) {
-                    ((RemoteCalledContext)context).getContext().put(beanName, packet);
+                    ((RemoteCalledContext)context).getContext().getContextMap().put(beanName, packet);
                 } else {
                     throw new RuntimeException("设置的context类型出错");
                 }
+                setProxyBean(beanName, clazz);
             }
         }catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
+    }
+
+    private void setProxyBean(String beanName, Class<?> clazz) {
+        Object object = RemoteCallProxyFactory.create(beanName, clazz);
+        if(object != null) {
+            synchronized (BeanContext.BEAN_CONTEXT_LOCK) {
+                BeanContext.getBeanContext().getContextMap().put(beanName, object);
+            }
+        }
+
     }
 
 }

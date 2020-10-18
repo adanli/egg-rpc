@@ -2,12 +2,14 @@ package org.egg.integration.erpc;
 
 
 import org.egg.integration.erpc.component.proxy.RemoteCallProxyFactory;
-import org.egg.integration.erpc.component.scan.AnnotationBeanAnnotationScan;
 import org.egg.integration.erpc.context.EggContext;
+import org.egg.integration.erpc.generator.SnowFlakeWorker;
 import org.egg.integration.erpc.protocol.tcp.ITcp;
 import org.egg.integration.erpc.protocol.tcp.erpc.Erpc;
 import org.egg.integration.erpc.service.DemoService;
 import org.junit.Test;
+
+import java.nio.charset.Charset;
 
 public class TransportServerTest {
 
@@ -16,6 +18,7 @@ public class TransportServerTest {
 //        testInitScanToContext();
 //        testAnnotation();
         testInitContext();
+        testAnnotation();
     }
 
     @Test
@@ -36,19 +39,9 @@ public class TransportServerTest {
     @Test
     public void testAnnotation() {
         DemoService demoService = (DemoService) RemoteCallProxyFactory.getBean("demoService");
-        if(demoService != null) {
-            demoService.hello(  "aaa");
-            System.out.println("---------------------------");
-            demoService.hi("name");
-        }
-    }
-
-    /**
-     * 将带有@RemoteService注解的对象在项目启动的时候加入到context中
-     */
-    @Test
-    public void testInitScanToContext() {
-        new AnnotationBeanAnnotationScan();
+        demoService.hello(  "aaa");
+//        System.out.println("---------------------------");
+//        demoService.hi("name");
     }
 
     /**
@@ -56,6 +49,19 @@ public class TransportServerTest {
      */
     @Test
     public void testPackageRequestIntoPacket() {
+
+    }
+
+    @Test
+    public void testLength() {
+        testInitContext();
+        System.out.println(" ".getBytes().length); // 1
+        System.out.println("\n".getBytes().length); // 1
+        SnowFlakeWorker snowFlakeWorker = (SnowFlakeWorker) RemoteCallProxyFactory.getBean("snowFlakeWorker");
+
+        Long seqId = snowFlakeWorker.nextId();
+        System.out.println(String.valueOf(seqId).getBytes(Charset.defaultCharset()).length); // 18
+
 
     }
 

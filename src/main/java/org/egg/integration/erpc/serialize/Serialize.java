@@ -1,6 +1,5 @@
 package org.egg.integration.erpc.serialize;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.egg.integration.erpc.serialize.packet.Packet;
 
 /**

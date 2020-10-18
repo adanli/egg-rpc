@@ -9,10 +9,15 @@ import java.util.Map;
 
 public class BeanContext extends Context{
     private static BeanContext context;
-    private Map<String, Object> contextMap = new HashMap<>();
+    private final Map<String, Object> contextMap = new HashMap<>();
+    public final static Object BEAN_CONTEXT_LOCK = new Object();
 
     private BeanContext() {
-        new AnnotationBeanScan(this);
+    }
+
+    @Override
+    public void mount() {
+        new AnnotationBeanScan(context);
     }
 
     public static BeanContext getBeanContext() {
