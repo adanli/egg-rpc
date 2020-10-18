@@ -29,6 +29,7 @@ public class ConsumerRequestQueue {
 
     class ConsumerRequest implements Runnable {
         private Interruptible interruptor = null;
+        private Packet packet;
 
         @Override
         public void run() {
@@ -42,8 +43,9 @@ public class ConsumerRequestQueue {
         private void doConsumer() {
             while (packets.size() > 0) {
                 synchronized (RequestQueue.REQUEST_QUEUE_LOCK) {
-                    Packet packet = packets.pollLast();
+                    packet = packets.pollLast();
                     System.out.println("消费" + packet);
+                    packet = null;
                 }
             }
         }
@@ -53,7 +55,10 @@ public class ConsumerRequestQueue {
                 interruptor = new Interruptible() {
                     @Override
                     public void interrupt(Thread thread) {
-
+                        // 如果出现问题，将当前packet放回
+                        if(packet != null) {
+                            RequestQueue.attach(packet);
+                        }
                     }
                 };
             }
