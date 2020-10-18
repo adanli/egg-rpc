@@ -56,9 +56,7 @@ public class ConsumerRequestQueue {
                     @Override
                     public void interrupt(Thread thread) {
                         // 如果出现问题，将当前packet放回
-                        if(packet != null) {
-                            RequestQueue.attach(packet);
-                        }
+                        reimportPacket(packet);
                     }
                 };
             }
@@ -71,6 +69,12 @@ public class ConsumerRequestQueue {
 
         private void end() {
             blockOn(null);
+        }
+
+        private void reimportPacket(Packet packet) {
+            if(packet != null) {
+                RequestQueue.attach(packet);
+            }
         }
 
     }
