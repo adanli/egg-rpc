@@ -7,8 +7,6 @@ import org.egg.integration.erpc.serialize.packet.SimplePacket;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * 拦截符合条件的方法，并将参数构建成数据包packet
@@ -53,6 +51,7 @@ public class RemoteServiceProxy implements InvocationHandler {
             System.out.printf(sb.toString()+"\n", parameters);*/
             Packet packet = packet(remotePacket, method, args);
             packet.execute();
+//            RequestQueue.attach(packet);
 
             return defaultResult;
         }

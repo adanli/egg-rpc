@@ -10,15 +10,18 @@ import org.egg.integration.erpc.service.DemoService;
 import org.junit.Test;
 
 import java.nio.charset.Charset;
+import java.util.concurrent.TimeUnit;
 
 public class TransportServerTest {
 
     @Test
-    public void testAll() {
+    public void testAll() throws Exception{
 //        testInitScanToContext();
 //        testAnnotation();
         testInitContext();
+        Thread.sleep(1000);
         testAnnotation();
+        Thread.currentThread().join();
     }
 
     @Test
@@ -40,6 +43,14 @@ public class TransportServerTest {
     public void testAnnotation() {
         DemoService demoService = (DemoService) RemoteCallProxyFactory.getBean("demoService");
         demoService.hello(  "aaa");
+
+        try {
+            TimeUnit.SECONDS.sleep(5);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        demoService.hi("bbb");
+
 //        System.out.println("---------------------------");
 //        demoService.hi("name");
     }
