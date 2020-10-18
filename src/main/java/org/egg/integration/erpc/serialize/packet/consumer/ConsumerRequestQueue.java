@@ -3,13 +3,13 @@ package org.egg.integration.erpc.serialize.packet.consumer;
 import org.egg.integration.erpc.annotation.Service;
 import org.egg.integration.erpc.constant.RequestQueue;
 import org.egg.integration.erpc.serialize.packet.Packet;
+import org.omg.CORBA.INITIALIZE;
 
 import java.util.LinkedList;
-import java.util.concurrent.TimeUnit;
 
 @Service
 public class ConsumerRequestQueue {
-    private int state = 0;
+    private boolean start = true;
     private LinkedList<Packet> packets;
 
     public ConsumerRequestQueue() {
@@ -20,11 +20,13 @@ public class ConsumerRequestQueue {
 
 
     private void consumer() {
-        new Thread(new ConsumerRequest()).start();
+        ConsumerRequest consumer = new ConsumerRequest();
+        new Thread(consumer).start();
+//        consumer.wakeup();
     }
 
     public void stop() {
-        state = state << 1;
+        start = false;
     }
 
     class ConsumerRequest implements Runnable {
@@ -32,11 +34,13 @@ public class ConsumerRequestQueue {
         @Override
         public void run() {
             System.out.println("开始消费");
-            while (state == 0) {
+            while (start) {
+//                Thread.currentThread().interrupt();
                 try {
-                    TimeUnit.SECONDS.sleep(1);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+                Thread.sleep(1);
+
+                }catch (InterruptedException e) {
+
                 }
                 while (packets.size() > 0) {
                     synchronized (RequestQueue.REQUEST_QUEUE_LOCK) {
@@ -44,9 +48,11 @@ public class ConsumerRequestQueue {
                         System.out.println("消费" + packet);
                     }
                 }
-
             }
         }
+
+
+
     }
 
 }
