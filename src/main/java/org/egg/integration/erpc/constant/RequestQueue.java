@@ -7,7 +7,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class RequestQueue {
-    private transient static final List<Packet> queue = new LinkedList<>();
+    private volatile static List<Packet> queue = new LinkedList<>();
     public static final Object REQUEST_QUEUE_LOCK = new Object();
 
     public static void attach(Packet packet) {

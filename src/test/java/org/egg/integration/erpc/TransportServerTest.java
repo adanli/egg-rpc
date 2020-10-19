@@ -18,6 +18,7 @@ public class TransportServerTest {
     public void testAll() throws Exception{
         testInitContext();
         testAnnotation();
+        Thread.currentThread().join();
     }
 
     @Test

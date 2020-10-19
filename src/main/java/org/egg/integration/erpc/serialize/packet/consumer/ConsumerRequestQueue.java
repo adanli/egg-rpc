@@ -1,26 +1,31 @@
 package org.egg.integration.erpc.serialize.packet.consumer;
 
 import org.egg.integration.erpc.annotation.Service;
+import org.egg.integration.erpc.component.proxy.RemoteCallProxyFactory;
 import org.egg.integration.erpc.constant.RequestQueue;
 import org.egg.integration.erpc.serialize.packet.Packet;
+import org.egg.integration.erpc.transport.Transport;
 import sun.nio.ch.Interruptible;
 
+import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.Set;
 
 @Service
 public class ConsumerRequestQueue {
     private boolean start = true;
-    private LinkedList<Packet> packets;
+    public static LinkedList<Packet> packets;
+
+    public static Set<Thread> set = new HashSet<>();
 
     public ConsumerRequestQueue() {
         packets = RequestQueue.queue();
         consumer();
     }
 
-
     private void consumer() {
-        ConsumerRequest consumer = new ConsumerRequest();
-        new Thread(consumer).start();
+        Transport transport = (Transport) RemoteCallProxyFactory.getBean("simpleTransport");
+        new Thread(new ConsumerRequest(transport)).start();
     }
 
     public void stop() {
@@ -30,6 +35,11 @@ public class ConsumerRequestQueue {
     class ConsumerRequest implements Runnable {
         private Interruptible interruptor = null;
         private Packet packet;
+        private Transport transport;
+
+        public ConsumerRequest(Transport transport) {
+            this.transport = transport;
+        }
 
         @Override
         public void run() {
@@ -44,7 +54,8 @@ public class ConsumerRequestQueue {
             while (packets.size() > 0) {
                 synchronized (RequestQueue.REQUEST_QUEUE_LOCK) {
                     packet = packets.pollLast();
-                    System.out.println("消费" + packet);
+//                    System.out.println("消费" + packet);
+                    transport.send(packet);
                     packet = null;
                 }
             }
@@ -82,4 +93,5 @@ public class ConsumerRequestQueue {
     private static void blockOn(Interruptible interrupt) {
         sun.misc.SharedSecrets.getJavaLangAccess().blockedOn(Thread.currentThread(), interrupt);
     }
+
 }

@@ -2,7 +2,7 @@ package org.egg.integration.erpc.serialize.packet;
 
 import org.egg.integration.erpc.protocol.ProtocolTypeEnum;
 
-import java.util.Map;
+import java.util.Arrays;
 
 /**
  * 只包含summary和content两部分， 其中
@@ -12,19 +12,47 @@ import java.util.Map;
  * 包含远程调用的ip、port、protocol信息
  */
 public abstract class Packet {
-    protected String remoteIp;
-    protected int port;
+    protected String sourceIp;
+    private int sourcePort;
+    protected String destIp;
+
+    public String getSourceIp() {
+        return sourceIp;
+    }
+
+    public void setSourceIp(String sourceIp) {
+        this.sourceIp = sourceIp;
+    }
+
+    public int getSourcePort() {
+        return sourcePort;
+    }
+
+    public void setSourcePort(int sourcePort) {
+        this.sourcePort = sourcePort;
+    }
+
+    public String getDestIp() {
+        return destIp;
+    }
+
+    public void setDestIp(String destIp) {
+        this.destIp = destIp;
+    }
+
+    public int getDestPort() {
+        return destPort;
+    }
+
+    public void setDestPort(int destPort) {
+        this.destPort = destPort;
+    }
+
+    protected int destPort;
     protected ProtocolTypeEnum protocol;
     protected String summary;
     protected Content content;
 
-    public String getRemoteIp() {
-        return remoteIp;
-    }
-
-    public int getPort() {
-        return port;
-    }
 
     public ProtocolTypeEnum getProtocol() {
         return protocol;
@@ -36,14 +64,6 @@ public abstract class Packet {
 
     public Content getContent() {
         return content;
-    }
-
-    public void setRemoteIp(String remoteIp) {
-        this.remoteIp = remoteIp;
-    }
-
-    public void setPort(int port) {
-        this.port = port;
     }
 
     public void setProtocol(ProtocolTypeEnum protocol) {
@@ -86,6 +106,15 @@ public abstract class Packet {
 
         public void setParameters(Object[] parameters) {
             this.parameters = parameters;
+        }
+
+        @Override
+        public String toString() {
+            return "Content{" +
+                    "className='" + className + '\'' +
+                    ", methodName='" + methodName + '\'' +
+                    ", parameters=" + Arrays.toString(parameters) +
+                    '}';
         }
     }
 

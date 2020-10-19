@@ -23,17 +23,19 @@ public class SimplePacket extends Packet {
         sb.append(content);
 
         RequestQueue.attach(this);
-        System.out.println("已添加, size: " + RequestQueue.queue().size());
+//        System.out.println("已添加, size: " + RequestQueue.queue().size());
+        /*Thread t = ConsumerRequestQueue.set.iterator().next();
+        System.out.println("线程状态: " + t.getState().name());
+        System.out.println("消费者packets数量: " + ConsumerRequestQueue.packets.size());*/
 
-//        System.out.println(sb.toString());
-//        System.out.println(this);
     }
 
     @Override
     public String toString() {
         return "SimplePacket{" +
-                "remoteIp='" + remoteIp + '\'' +
-                ", port=" + port +
+                "sourceIp='" + sourceIp + '\'' +
+                ", destIp='" + destIp + '\'' +
+                ", destPort=" + destPort +
                 ", protocol=" + protocol +
                 ", summary='" + summary + '\'' +
                 ", content=" + content +

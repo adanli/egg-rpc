@@ -66,8 +66,8 @@ public class RemoteServiceProxy implements InvocationHandler {
     private Packet packet(RemoteCalledContext.RemoteCalledPacket standardPacket,
                                Method method, Object[] args) {
         Packet packet = new SimplePacket();
-        packet.setRemoteIp(standardPacket.getIp());
-        packet.setPort(standardPacket.getPort());
+        packet.setDestIp(standardPacket.getIp());
+        packet.setDestPort(standardPacket.getPort());
         packet.setProtocol(standardPacket.getProtocol());
         Packet.Content content = new Packet.Content();
         content.setClassName(object.getClass().getName());
