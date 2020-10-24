@@ -17,7 +17,7 @@ import java.util.Arrays;
 public class RemoteCalledScan extends AbstractScan {
     private static Context context;
     private final String remoteCalledScanCoverage = TemporaryConstant.EGG_RPC_COMPONENT_SCAN;
-    private final static String ANNOTATION_SERVICE = "org.egg.integration.erpc.annotation.RemoteCalled";
+    private final static String ANNOTATION_SERVICE = "org.egg.integration.erpc.annotation.RemoteService";
 
     public RemoteCalledScan(RemoteCalledContext context) {
         super(context);

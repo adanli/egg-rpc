@@ -17,7 +17,7 @@ import java.lang.annotation.*;
 @Target(value = {ElementType.TYPE})
 @Documented
 @Service
-public @interface RemoteCalled {
+public @interface RemoteService {
     String ip() default "";
     int port() default 8080;
     ProtocolTypeEnum protocol() default ProtocolTypeEnum.ERPC;
