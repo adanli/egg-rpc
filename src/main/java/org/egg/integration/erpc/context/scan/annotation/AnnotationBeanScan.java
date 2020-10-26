@@ -24,7 +24,6 @@ public class AnnotationBeanScan extends AbstractScan {
     protected void handleClass(String className) {
         Object object = create(className);
         String beanName = BeanNameUtils.beautifyBeanName(className);
-//        contextMap.putIfAbsent(beanName, object);
         if(contextMap.get(beanName) == null) {
             synchronized (BeanContext.BEAN_CONTEXT_LOCK) {
                 contextMap.putIfAbsent(beanName, object);

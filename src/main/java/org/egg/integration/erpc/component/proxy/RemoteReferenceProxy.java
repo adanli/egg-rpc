@@ -1,31 +1,27 @@
 package org.egg.integration.erpc.component.proxy;
 
-import org.egg.integration.erpc.context.extra.RemoteServiceContext;
+import org.egg.integration.erpc.context.extra.RemoteReferenceContext;
 import org.egg.integration.erpc.serialize.packet.Packet;
 import org.egg.integration.erpc.serialize.packet.SimplePacket;
 
+import java.io.Serializable;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 
-/**
- * 拦截符合条件的方法，并将参数构建成数据包packet
- */
-public class RemoteServiceProxy implements InvocationHandler {
+public class RemoteReferenceProxy implements InvocationHandler, Serializable {
     private final static int defaultParameterNumbers = 5;
     private final Object defaultResult = new Object();
-    private final Object object;
-    private final String beanName;
+    private final Class<?> type;
 
-    public RemoteServiceProxy(Object object, String beanName) {
-        this.object = object;
-        this.beanName = beanName;
+    public RemoteReferenceProxy(Class<?> type) {
+        this.type = type;
     }
 
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         if(isDeClearedMethod(method.getName())) {
-            RemoteServiceContext.RemoteCalledPacket remotePacket = RemoteServiceContext.getContext().getContextMap().get(beanName);
+            RemoteReferenceContext.RemoteCalledPacket remotePacket = RemoteReferenceContext.getContext().getPacket().get(type.getName());
             if(remotePacket == null) {
                 throw new RuntimeException("注解中未标注ip、端口等信息");
             }
@@ -56,24 +52,23 @@ public class RemoteServiceProxy implements InvocationHandler {
             return defaultResult;
         }
 
-        return method.invoke(object, args);
+        return method.invoke(this, args);
     }
 
     private boolean isDeClearedMethod(String methodName) {
-        return Arrays.stream(object.getClass().getDeclaredMethods()).filter(method -> method.getName().equals(methodName)).findFirst().orElse(null) != null;
+        return Arrays.stream(type.getDeclaredMethods()).filter(method -> method.getName().equals(methodName)).findFirst().orElse(null) != null;
     }
 
-    private Packet packet(RemoteServiceContext.RemoteCalledPacket standardPacket,
+    private Packet packet(RemoteReferenceContext.RemoteCalledPacket standardPacket,
                           Method method, Object[] args) {
         Packet packet = new SimplePacket();
         packet.setDestIp(standardPacket.getIp());
         packet.setDestPort(standardPacket.getPort());
         packet.setProtocol(standardPacket.getProtocol());
         Packet.Content content = new Packet.Content();
-        content.setClassName(object.getClass().getName());
+        content.setClassName(type.getName());
         content.setMethodName(method.getName());
         packet.setContent(content);
         return packet;
     }
-
 }

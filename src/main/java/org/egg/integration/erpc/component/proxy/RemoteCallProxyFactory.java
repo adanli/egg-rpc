@@ -2,7 +2,6 @@ package org.egg.integration.erpc.component.proxy;
 
 
 import org.egg.integration.erpc.context.BeanContext;
-import org.egg.integration.erpc.context.util.BeanNameUtils;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
@@ -36,14 +35,8 @@ public class RemoteCallProxyFactory {
     }
 
     public static Object create(String beanName, Class<?> clazz) {
-        try {
-            Object object = clazz.newInstance();
-            InvocationHandler proxyObject = new RemoteServiceProxy(object, beanName);
-            return Proxy.newProxyInstance(proxyObject.getClass().getClassLoader(), object.getClass().getInterfaces(), proxyObject);
-        } catch (InstantiationException | IllegalAccessException e) {
-            e.printStackTrace();
-        }
-        return null;
+        InvocationHandler ih = new RemoteReferenceProxy(clazz);
+        return Proxy.newProxyInstance(ih.getClass().getClassLoader(), clazz.getInterfaces(), ih);
     }
 
 }

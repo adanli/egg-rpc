@@ -171,4 +171,7 @@ Context <|-- BeanContext
 1. spring服务启动的时候扫描注入是怎么实现的
 2. spring框架对于@Service、@Component、@Autowire的加载顺序
 
+### 能力
+- 提供一个`RemoteService`注解，将被该注解标注的实体类放到`RemoteServiceContext`上下文中
+- 提供一个`RemoteReference`注解，将被该注解标注的接口所调用的方法开启远程调用
 

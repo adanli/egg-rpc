@@ -7,10 +7,10 @@ import org.egg.integration.erpc.generator.SnowFlakeWorker;
 import org.egg.integration.erpc.protocol.tcp.ITcp;
 import org.egg.integration.erpc.protocol.tcp.erpc.Erpc;
 import org.egg.integration.erpc.service.DemoService;
+import org.egg.integration.erpc.service.impl.DemoReferenceServiceImpl;
 import org.junit.Test;
 
 import java.nio.charset.Charset;
-import java.util.concurrent.TimeUnit;
 
 public class TransportServerTest {
 
@@ -18,7 +18,14 @@ public class TransportServerTest {
     public void testAll() throws Exception{
         testInitContext();
         testAnnotation();
-        Thread.currentThread().join();
+        testReference();
+//        Thread.currentThread().join();
+    }
+
+    @Test
+    public void testReference() {
+        DemoReferenceServiceImpl demoReferenceService = (DemoReferenceServiceImpl) RemoteCallProxyFactory.getBean("demoReferenceService");
+        demoReferenceService.hello();
     }
 
     @Test
@@ -41,12 +48,12 @@ public class TransportServerTest {
         DemoService demoService = (DemoService) RemoteCallProxyFactory.getBean("demoService");
         demoService.hello(  "aaa");
 
-        try {
+        /*try {
             TimeUnit.SECONDS.sleep(5);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        demoService.hi("bbb");
+        demoService.hi("bbb");*/
     }
 
     /**

@@ -1,44 +1,44 @@
 package org.egg.integration.erpc.context.extra;
 
-import org.egg.integration.erpc.context.scan.annotation.RemoteCalledScan;
+import org.egg.integration.erpc.context.scan.annotation.RemoteReferenceScan;
 import org.egg.integration.erpc.protocol.ProtocolTypeEnum;
 
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * 远程调用上下文, 单例
- * 1. 利用扫描器扫描@RemoteCalled的注解
- * 2. 将RemoteCalled注解的类中的信息以<k, v>形式保存，其中k: beanName，v: ip，port等信息
- */
-public class RemoteCalledContext extends ExtraContext{
-    private final Map<String, RemoteCalledPacket> contextMap;
-    private static RemoteCalledContext context;
+public class RemoteReferenceContext extends ExtraContext {
+    private final Map<String, Object> contextMap;
+    private final Map<String, RemoteCalledPacket> packet;
+    private static RemoteReferenceContext context;
 
     @Override
     public void mount() {
-        new RemoteCalledScan(context);
+        new RemoteReferenceScan(context);
     }
 
-    private RemoteCalledContext() {
+    private RemoteReferenceContext() {
         contextMap = new HashMap<>();
+        packet = new HashMap<>();
     }
 
-    public Map<String, RemoteCalledPacket> getContextMap() {
+    public Map<String, Object> getContextMap() {
         return contextMap;
     }
 
-    public static RemoteCalledContext getContext() {
+    public static RemoteReferenceContext getContext() {
         if(context == null) {
-            synchronized (RemoteCalledContext.class) {
+            synchronized (RemoteReferenceContext.class) {
                 if(context == null) {
-                    context = new RemoteCalledContext();
+                    context = new RemoteReferenceContext();
                 }
             }
         }
         return context;
     }
 
+    public Map<String, RemoteCalledPacket> getPacket() {
+        return packet;
+    }
 
     public static class RemoteCalledPacket {
         private String ip;
@@ -82,5 +82,4 @@ public class RemoteCalledContext extends ExtraContext{
             return protocol;
         }
     }
-
 }

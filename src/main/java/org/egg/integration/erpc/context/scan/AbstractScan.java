@@ -5,6 +5,7 @@ import org.egg.integration.erpc.context.Context;
 import java.io.File;
 import java.io.IOException;
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
 import java.net.URL;
 import java.util.Enumeration;
 import java.util.HashSet;
@@ -76,6 +77,10 @@ public abstract class AbstractScan {
                 if(isTargetClass(className, annotationStr)) {
                     handleClass(className);
                 }
+                Field targetField = isTargetField(className, annotationStr);
+                if(targetField != null) {
+                    handleField(targetField);
+                }
             }
         }
     }
@@ -105,7 +110,7 @@ public abstract class AbstractScan {
      * @param annotationStr 目标注解值
      * @return 是否包含目标注解
      */
-    private static boolean hasAnnotation(Annotation[] annotations, String annotationStr, HashSet<String> set) {
+    protected static boolean hasAnnotation(Annotation[] annotations, String annotationStr, HashSet<String> set) {
         for(Annotation annotation: annotations) {
             if(annotation.annotationType().getName().equals(annotationStr)) {
                 return true;
@@ -124,8 +129,24 @@ public abstract class AbstractScan {
     /**
      * 处理当前类
      * @param className 类的全路径
-     * @return
      */
-    protected abstract void handleClass(String className);
+    protected void handleClass(String className) {};
+
+    /**
+     * 判断目标类的属性中是否包含目标注解
+     * @param className 类全路径
+     * @return 属性名的全路径
+     */
+    protected Field isTargetField(String className, String annotationStr) {
+        return null;
+    };
+
+    /**
+     * 对属性的信息进行处理
+     * @param field 属性名的全路径
+     */
+    protected  void handleField(Field field) {
+
+    };
 
 }

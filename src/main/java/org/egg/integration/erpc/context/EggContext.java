@@ -1,6 +1,7 @@
 package org.egg.integration.erpc.context;
 
-import org.egg.integration.erpc.context.extra.RemoteCalledContext;
+import org.egg.integration.erpc.context.extra.RemoteReferenceContext;
+import org.egg.integration.erpc.context.extra.RemoteServiceContext;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +27,8 @@ public class EggContext extends Context{
 
     private static void initRemoteCalledContext() {
         List<Context> list = new ArrayList<>(1);
-        list.add(RemoteCalledContext.getContext());
+        list.add(RemoteServiceContext.getContext());
+        list.add(RemoteReferenceContext.getContext());
         setExtraContext(list);
     }
 
@@ -70,9 +72,9 @@ public class EggContext extends Context{
                 ((BeanContext)context).getContextMap().forEach((k, v) -> {
                     System.out.printf("%s: %s 已经在加载到资源池\n", k, v);
                 });
-            } else if(context instanceof RemoteCalledContext) {
-                System.out.println("RemoteCalledContext: ");
-                ((RemoteCalledContext)context).getContext().getContextMap().forEach((k, v) -> {
+            } else if(context instanceof RemoteServiceContext) {
+                System.out.println("RemoteServiceContext: ");
+                ((RemoteServiceContext)context).getContext().getContextMap().forEach((k, v) -> {
                     System.out.printf("\t%s: %s\n", k, v);
                 });
             }

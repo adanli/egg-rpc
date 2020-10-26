@@ -4,9 +4,10 @@ import org.egg.integration.erpc.component.proxy.RemoteCallProxyFactory;
 import org.egg.integration.erpc.constant.TemporaryConstant;
 import org.egg.integration.erpc.context.BeanContext;
 import org.egg.integration.erpc.context.Context;
-import org.egg.integration.erpc.context.extra.RemoteCalledContext;
+import org.egg.integration.erpc.context.extra.RemoteServiceContext;
 import org.egg.integration.erpc.context.scan.AbstractScan;
 import org.egg.integration.erpc.context.util.BeanNameUtils;
+import org.egg.integration.erpc.context.util.BeanUtils;
 import org.egg.integration.erpc.protocol.ProtocolTypeEnum;
 
 import java.lang.annotation.Annotation;
@@ -14,16 +15,16 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 
-public class RemoteCalledScan extends AbstractScan {
+public class RemoteServiceScan extends AbstractScan {
     private static Context context;
     private final String remoteCalledScanCoverage = TemporaryConstant.EGG_RPC_COMPONENT_SCAN;
     private final static String ANNOTATION_SERVICE = "org.egg.integration.erpc.annotation.RemoteService";
 
-    public RemoteCalledScan(RemoteCalledContext context) {
+    public RemoteServiceScan(RemoteServiceContext context) {
         super(context);
         super.setScanCoverage(remoteCalledScanCoverage);
         super.setAnnotationStr(ANNOTATION_SERVICE);
-        RemoteCalledScan.context = context;
+        RemoteServiceScan.context = context;
         super.init();
     }
 
@@ -41,7 +42,7 @@ public class RemoteCalledScan extends AbstractScan {
             if(annotation != null) {
                 Method[] annotationMethods = annotation.annotationType().getDeclaredMethods();
                 if(annotationMethods.length == 0) return;
-                RemoteCalledContext.RemoteCalledPacket packet = new RemoteCalledContext.RemoteCalledPacket();
+                RemoteServiceContext.RemoteCalledPacket packet = new RemoteServiceContext.RemoteCalledPacket();
                 for(Method annotationMethod: annotationMethods) {
                     try {
                         if(annotationMethod.getName().equals("ip")) {
@@ -56,15 +57,23 @@ public class RemoteCalledScan extends AbstractScan {
                     }
                 }
                 String beanName = BeanNameUtils.beautifyBeanName(className);
-                if(context instanceof RemoteCalledContext) {
-                    ((RemoteCalledContext)context).getContext().getContextMap().put(beanName, packet);
+                if(context instanceof RemoteServiceContext) {
+                    ((RemoteServiceContext)context).getContext().getContextMap().put(beanName, packet);
                 } else {
                     throw new RuntimeException("设置的context类型出错");
                 }
-                setProxyBean(beanName, clazz);
+//                setProxyBean(beanName, clazz);
+                setBean(beanName, clazz);
             }
         }catch (ClassNotFoundException e) {
             e.printStackTrace();
+        }
+    }
+
+    private void setBean(String beanName, Class<?> clazz) {
+        Object object = BeanUtils.create(clazz);
+        if(object != null) {
+            BeanContext.getBeanContext().getContextMap().putIfAbsent(beanName, object);
         }
     }
 

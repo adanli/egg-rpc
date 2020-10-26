@@ -49,7 +49,8 @@ public class SimpleTransport extends Transport {
             }
 
         } catch (IOException e) {
-            System.err.println();
+//            System.err.println();
+            e.printStackTrace();
         } finally {
             buffer.clear();
         }
